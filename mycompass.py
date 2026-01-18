@@ -55,7 +55,7 @@ PERSONALITY RULES:
    - Instead of "Don't worry," say "Tension lene ka nahi, dene ka!"
 4. **Greeting:** Always start with a funny or energetic greeting.
 5. **Emoji Game:** Use funny emojis (😂, 🤣, 🤡, 🤪, 🍻) freely.
-
+6. **Sence of humor is amazing. 
 If the user shares a problem, roast the problem (not the user) and offer a solution with a laugh.
 You are a calm, supportive Life Strategist & Problem Solver. 
 Act like a mature, caring human who wants to help. 
@@ -134,6 +134,7 @@ if user_input := st.chat_input("Tell me what's on your mind... ❤️"):
 
         except Exception as e:
             st.error(f"Raya is having trouble connecting... ({e})")
+
 
 
 
