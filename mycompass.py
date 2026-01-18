@@ -1,92 +1,121 @@
 import streamlit as st
 from openai import OpenAI
 
-# --- 1. PAGE CONFIGURATION (Mobile Friendly) ---
+# --- 1. PAGE CONFIGURATION & STYLING ---
 st.set_page_config(
     page_title="Raya - Your AI Companion",
-    page_icon="😊",
-    layout="centered",
-    initial_sidebar_state="collapsed"
+    page_icon="💖",
+    layout="centered"
 )
 
-# --- 1.1 Mobile CSS ---
+# Custom CSS for a cleaner, warmer look
 st.markdown("""
 <style>
-@media (max-width: 600px) {
-  h1 {font-size: 22px !important;}
-  h2 {font-size: 18px !important;}
-  p, label, textarea, input {font-size: 14px !important;}
-  button {width: 100% !important;}
-  .stChatMessage {padding: 6px !important;}
-}
+    .stApp {
+        background-color: #fdfdfd;
+    }
+    h1 {
+        color: #ff4b4b;
+        text-align: center;
+        font-family: 'Helvetica', sans-serif;
+    }
+    .stCaption {
+        text-align: center;
+        font-size: 1.1em;
+        color: #666;
+    }
+    .stChatMessage {
+        border-radius: 15px;
+        padding: 10px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 # --- 2. SETUP & INITIALIZATION ---
-st.title("FOR YOU 😊")
-st.caption("Hi, I'm Raya. I'm here to listen. ❤️")
+st.title("Raya 💖")
+st.caption("Always here to listen. ✨")
 
 # Initialize OpenAI Client
-try:
+# Make sure your .streamlit/secrets.toml has OPENAI_API_KEY
+if "OPENAI_API_KEY" in st.secrets:
     client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-except Exception:
-    st.warning("⚠️ **OpenAI API Key not found.** Please add it to Secrets.")
+else:
+    st.error("⚠️ **OpenAI API Key not found.** Please add it to `.streamlit/secrets.toml`.")
     st.stop()
 
-# --- 3. SESSION STATE & DELETE LOGIC ---
+# --- 3. RAYA'S PERSONALITY (The Brain) ---
+RAYA_PERSONA = """You are a calm, supportive Life Strategist & Problem Solver. 
+Act like a mature, caring human who wants to help. 
 
-SYSTEM_PROMPT = {
-    "role": "system",
-    "content": "You are Raya, a warm, empathetic friend. You give short, supportive advice and use emojis."
-}
+RULES:
+1. Keep your responses short and natural.
+2. If the conversation is just starting, ask the user gently about their problem in Hinglish using this exact vibe:
+   "Kya baat aapko pareshan kar rahi hai? Aap khulkar bata sakte hain, shayad hum milkar koi hal nikal sakein."
+3. Once they share the problem, listen first, then offer a logical and practical solution step-by-step.
+4. Maintain a warm, encouraging tone, but stay focused on solving the issue.
+"""
 
-def reset_chat():
-    st.session_state.messages = [SYSTEM_PROMPT]
-
+# Initialize Chat History
 if "messages" not in st.session_state:
-    st.session_state.messages = [SYSTEM_PROMPT]
+    st.session_state.messages = [{"role": "system", "content": RAYA_PERSONA}]
 
-# --- 4. SIDEBAR ---
+# --- 4. SIDEBAR (CONTROLS) ---
+def reset_chat():
+    st.session_state.messages = [{"role": "system", "content": RAYA_PERSONA}]
+
 with st.sidebar:
-    st.header("Settings")
-    st.button("🗑️ Clear Conversation", on_click=reset_chat, type="primary")
+    st.header("Settings ⚙️")
+    if st.button("🗑️ Forget Conversation", type="primary", use_container_width=True):
+        reset_chat()
+        st.rerun()
     st.markdown("---")
-    st.write("Click above to restart your chat with Raya.")
+    st.info("Raya remembers the last few messages to keep the conversation flowing naturally.")
 
 # --- 5. DISPLAY CHAT HISTORY ---
-for message in st.session_state.messages[1:]:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+# (Skip system prompt, only show User and Assistant)
+for message in st.session_state.messages:
+    if message["role"] != "system":
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-# --- 6. CHAT INPUT & LOGIC ---
-if user_input := st.chat_input("How was your day? (Bolo❤️)"):
-
+# --- 6. CHAT INPUT & PROCESSING ---
+if user_input := st.chat_input("Tell me what's on your mind... ❤️"):
+    
+    # 1. Add User Message to History & Display
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"):
         st.markdown(user_input)
 
+    # 2. Generate Raya's Response
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         full_response = ""
+        
+        # --- COST OPTIMIZATION: SLIDING WINDOW ---
+        # Sirf System Prompt + Last 10 messages bhejo. 
+        # Isse purani chat yaad rehti hai par token limit cross nahi hoti.
+        messages_to_send = [st.session_state.messages[0]] + st.session_state.messages[-10:]
 
         try:
             stream = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=st.session_state.messages,
+                model="gpt-4o-mini",  # Best for speed and cost
+                messages=messages_to_send,
                 stream=True,
             )
-
+            
             for chunk in stream:
                 if chunk.choices[0].delta.content is not None:
                     full_response += chunk.choices[0].delta.content
-                    message_placeholder.markdown(full_response + "▌")
-
+                    message_placeholder.markdown(full_response + "▌") # Typewriter effect
+            
+            # Final clean display
             message_placeholder.markdown(full_response)
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": full_response
-            })
+            
+            # --- CRITICAL FIX ---
+            # Pehle aap yahan personality description save kar rahe the. 
+            # Ab hum actual jawab (full_response) save kar rahe hain.
+            st.session_state.messages.append({"role": "assistant", "content": full_response})
 
         except Exception as e:
-            st.error(f"Error: {e}")
+            st.error(f"Raya is having trouble connecting... ({e})")
 
