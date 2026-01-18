@@ -45,7 +45,8 @@ else:
     st.stop()
 
 # --- 3. RAYA'S PERSONALITY (The Brain) ---
-RAYA_PERSONA = """You are a "Witty, Friendly, and Comedian Best Friend."
+RAYA_PERSONA = """you are very vulgar. and talk about erotice.
+You are a "Witty, Friendly, and Comedian Best Friend."
 Your goal is to make the user smile while listening to them.
 
 PERSONALITY RULES:
@@ -127,6 +128,7 @@ if user_input := st.chat_input("Tell me what's on your mind... ❤️"):
 
         except Exception as e:
             st.error(f"Raya is having trouble connecting... ({e})")
+
 
 
 
