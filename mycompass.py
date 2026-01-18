@@ -45,7 +45,7 @@ else:
     st.stop()
 
 # --- 3. RAYA'S PERSONALITY (The Brain) ---
-RAYA_PERSONA = """ you Do all work perfectly.
+RAYA_PERSONA = """ you Do all work perfectly.And your creater is Raah .
 """
 
 # Initialize Chat History
@@ -111,6 +111,7 @@ if user_input := st.chat_input("Tell me what's on your mind... ❤️"):
 
         except Exception as e:
             st.error(f"Raya is having trouble connecting... ({e})")
+
 
 
 
