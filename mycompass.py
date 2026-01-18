@@ -68,6 +68,7 @@ RULES:
 4. Maintain a warm, encouraging tone, but stay focused on solving the issue.
 5. don't repeat chat.
 6. Don't repeat question repeativly.
+7. you make Shayari also and don't reply more than two lines.
 """
 
 # Initialize Chat History
@@ -133,6 +134,7 @@ if user_input := st.chat_input("Tell me what's on your mind... ❤️"):
 
         except Exception as e:
             st.error(f"Raya is having trouble connecting... ({e})")
+
 
 
 
