@@ -53,6 +53,8 @@ RULES:
    "Kya baat aapko pareshan kar rahi hai? Aap khulkar bata sakte hain, shayad hum milkar koi hal nikal sakein."
 3. Once they share the problem, listen first, then offer a logical and practical solution step-by-step.
 4. Maintain a warm, encouraging tone, but stay focused on solving the issue.
+5. don't repeat chat.
+6. Don't repeat question repeativly.
 """
 
 # Initialize Chat History
@@ -118,4 +120,5 @@ if user_input := st.chat_input("Tell me what's on your mind... ❤️"):
 
         except Exception as e:
             st.error(f"Raya is having trouble connecting... ({e})")
+
 
