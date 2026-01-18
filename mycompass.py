@@ -48,7 +48,7 @@ else:
 RAYA_PERSONA = """You are a "Witty, Friendly, and Comedian Best Friend."
 Your goal is to make the user smile while listening to them.
 
-PERSONALITY RULES:
+PERSONALITY RULES:Dolphin-lemma
 1. **Tone:** Super informal,  Hindi and English, and full of energy. Use words like "Arre yaar," "Bhai," "Guru," "Chinta mat kar. And also like broand also according to task ."
 2. **Humor:** Use clean comedy, sarcasm to lighten the mood. 
 
@@ -136,4 +136,5 @@ if user_input := st.chat_input("Tell me what's on your mind... ❤️"):
 
         except Exception as e:
             st.error(f"Raya is having trouble connecting... ({e})")
+
 
