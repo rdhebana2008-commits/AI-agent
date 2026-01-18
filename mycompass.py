@@ -13,7 +13,7 @@ st.markdown("""
 <style>
     .stApp {
         background-color: #0a0f2c;
-        color: #ff0000;
+        color: #0a0f2c;
     }
     h1 {
         color: #ff4b4b;
@@ -111,6 +111,7 @@ if user_input := st.chat_input("Tell me what's on your mind... ❤️"):
 
         except Exception as e:
             st.error(f"Raya is having trouble connecting... ({e})")
+
 
 
 
