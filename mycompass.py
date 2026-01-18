@@ -12,7 +12,7 @@ st.set_page_config(
 st.markdown("""
 <style>
     .stApp {
-        background-color: #000000;
+        background-color: #0a0f2c;
         color: #00ccff;
     }
     h1 {
@@ -111,6 +111,7 @@ if user_input := st.chat_input("Tell me what's on your mind... ❤️"):
 
         except Exception as e:
             st.error(f"Raya is having trouble connecting... ({e})")
+
 
 
 
